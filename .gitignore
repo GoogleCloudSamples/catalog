@@ -1,8 +1,4 @@
-
-# npm
-node_modules
-
-# hugo
+# Hugo output
 public/
-.hugo_build.lock
 resources/
+.hugo_build.lock

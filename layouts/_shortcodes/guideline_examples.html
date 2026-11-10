@@ -1,0 +1,63 @@
+{{- /*
+  Copyright 2026 Google LLC
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/ -}}
+{{- /* 
+    Outputs code examples for each language supported in the guide.
+    Call this using the % delimiter: {{% guideline_examples "region-tags" %}}
+
+    Calls Hextra's tabs partial directly instead of rendering a {{< tabs >}}
+    string with .Page.RenderString. Hextra derives the tab set id from the
+    shortcode's .Ordinal, which restarts at 0 in every RenderString call, so
+    every example set on a page would share ids and break the tabs'
+    aria-controls and aria-labelledby references.
+*/ -}}
+{{- $guideline := .Get 0 -}}
+{{- $languages := partial "samples/languages.html" . -}}
+
+{{- /* Sync tabs across the page the same way Hextra's tabs shortcode does. */ -}}
+{{- $enableSync := false -}}
+{{- if or (eq .Page.Params.tabs.sync false) (eq .Page.Params.tabs.sync true) -}}
+  {{- $enableSync = .Page.Params.tabs.sync -}}
+{{- else -}}
+  {{- $enableSync = site.Params.page.tabs.sync | default false -}}
+{{- end -}}
+
+{{- $tabs := slice -}}
+{{- range $i, $lang := $languages -}}
+  {{- $filePath := printf "content/docs/code/%s/%s.%s" $lang.folder $guideline $lang.ext -}}
+  {{- $notePath := printf "content/docs/code/%s/%s.md" $lang.folder $guideline -}}
+  {{- $hasCode := os.FileExists $filePath -}}
+  {{- $hasNote := os.FileExists $notePath -}}
+  {{- $tabContent := "" -}}
+  {{- if or $hasCode $hasNote -}}
+    {{- if $hasNote -}}
+      {{- $noteContent := os.ReadFile $notePath | strings.TrimSpace -}}
+      {{- $tabContent = printf "{{< callout type=\"important\" icon=\"annotation\" >}}\n%s\n{{< /callout >}}" $noteContent | $.Page.RenderString -}}
+    {{- end -}}
+    {{- if $hasCode -}}
+      {{- $codeBlock := printf "```%s\n%s\n```" $lang.lang (os.ReadFile $filePath) -}}
+      {{- if $tabContent -}}
+        {{- $tabContent = printf "%s\n%s" $tabContent $codeBlock -}}
+      {{- else -}}
+        {{- $tabContent = $codeBlock -}}
+      {{- end -}}
+    {{- end -}}
+  {{- else -}}
+    {{- $tabContent = printf "{{< callout type=\"info\">}}Not applicable{{< /callout >}}" | $.Page.RenderString -}}
+  {{- end -}}
+  {{- $tabs = $tabs | append (dict "id" $i "name" $lang.name "icon" "" "content" $tabContent "selected" false) -}}
+{{- end -}}
+
+{{- partial "shortcodes/tabs" (dict "tabs" $tabs "enableSync" $enableSync "id" (printf "%s-%d" $guideline .Ordinal)) -}}

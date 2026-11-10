@@ -1,0 +1,31 @@
+{{- /*
+  Copyright 2026 Google LLC
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/ -}}
+{{- /*
+  Languages shown in guideline examples, in display order. Returns a slice.
+  Shared by guideline_examples (HTML) and the agent/LLM text outputs.
+  Fields: name (tab label), lang (code fence and highlighter), ext (file
+  extension), folder (directory under content/docs/code/).
+*/ -}}
+{{- return slice
+  (dict "name" "Python" "lang" "python" "ext" "py" "folder" "python")
+  (dict "name" "Node.js" "lang" "javascript" "ext" "js" "folder" "node")
+  (dict "name" "Java" "lang" "java" "ext" "java" "folder" "java")
+  (dict "name" "Go" "lang" "go" "ext" "go" "folder" "go")
+  (dict "name" "C#" "lang" "csharp" "ext" "cs" "folder" "csharp")
+  (dict "name" "Ruby" "lang" "ruby" "ext" "rb" "folder" "ruby")
+  (dict "name" "PHP" "lang" "php" "ext" "php" "folder" "php")
+  (dict "name" "Terraform" "lang" "terraform" "ext" "tf" "folder" "terraform")
+-}}

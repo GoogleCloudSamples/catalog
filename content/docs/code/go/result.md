@@ -1,0 +1,1 @@
+Go sample functions accept an `io.Writer` parameter (`w io.Writer`) for testing purposes. Write output to `w` (for example, using `fmt.Fprintf(w, ...)` or `fmt.Fprintln(w, ...)`) rather than printing directly to `stdout` or `stderr`.

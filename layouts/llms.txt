@@ -1,0 +1,77 @@
+{{- /*
+  Site index for LLMs and agents (https://llmstxt.org/).
+  Overrides hextra's layouts/llms.txt to:
+  - Prefer each page's front matter description over a truncated summary.
+  - Link a page's Markdown version when the site builds one.
+  - List section index pages, not only their children.
+  - List any full-text outputs (llms-full*, llms-rules) the site builds.
+  Set `llms: false` in a page's front matter to leave it out.
+*/ -}}
+# {{ .Site.Title }}
+
+> {{ .Site.Params.description | default "" }}
+
+{{- $full := slice }}
+{{- $langs := slice }}
+{{- $rules := slice }}
+{{- range site.Home.OutputFormats }}
+  {{- if or (eq .Name "llmsfull") (eq .Name "llms-full") }}{{ $full = $full | append . }}
+  {{- else if or (eq .Name "llmsrules") (eq .Name "llms-rules") }}{{ $rules = $rules | append . }}
+  {{- else if and (hasPrefix .Name "llms") (ne .Name "llms") }}{{ $langs = $langs | append . }}
+  {{- end }}
+{{- end }}
+{{- if or $full $langs $rules }}
+
+## Full text
+{{- range $full }}
+- [Full guide, all languages]({{ .Permalink }}): Every page of the guide with code examples in every language.
+{{- end }}
+{{- range $langs }}
+- [Full guide, {{ strings.TrimPrefix "llms-" .Name | strings.TrimPrefix "llms" }} only]({{ .Permalink }}): Every page of the guide with only {{ strings.TrimPrefix "llms-" .Name | strings.TrimPrefix "llms" }} code examples.
+{{- end }}
+{{- range $rules }}
+- [Rules only (optional)]({{ .Permalink }}): Every page of the guide without code examples.
+{{- end }}
+{{- end }}
+
+{{- $rootPages := where (where site.RegularPages "Section" "") "Params.llms" "ne" false }}
+{{- if $rootPages }}
+
+## Root Pages
+{{- range $rootPages }}
+{{ template "llms-entry" . }}
+{{- end }}
+{{- end }}
+{{ range (where site.Sections "Params.llms" "ne" false).Reverse }}
+{{- template "llms-section-tree" dict "context" . "level" 2 }}
+{{ end }}
+
+---
+Generated on {{ now.UTC.Format "2006-01-02 15:04:05 MST" }}
+Site: {{ .Site.BaseURL }}
+
+{{- define "llms-entry" -}}
+{{- $url := .Permalink -}}
+{{- with .OutputFormats.Get "markdown" }}{{ $url = .Permalink }}{{ end -}}
+{{- $desc := .Description -}}
+{{- if not $desc -}}
+  {{- $desc = .Summary | plainify | htmlUnescape | replaceRE `\s+` " " | strings.TrimSpace | truncate 100 -}}
+{{- end -}}
+- [{{ .Title }}]({{ $url }}){{ with $desc }}: {{ . }}{{ end }}{{ if not .Date.IsZero }} - Published {{ .Date.Format "2006-01-02" }}{{ end }}
+{{- end -}}
+
+{{- define "llms-section-tree" -}}
+{{- $context := .context -}}
+{{- $level := .level | default 2 -}}
+{{- $headerHashes := strings.Repeat $level "#" -}}
+{{- "\n" -}}
+{{ $headerHashes }} {{ $context.Title }}
+{{ template "llms-entry" $context }}
+{{- range where $context.RegularPages "Params.llms" "ne" false }}
+{{ template "llms-entry" . }}
+{{- end }}
+
+{{- range where $context.Sections "Params.llms" "ne" false }}
+{{ template "llms-section-tree" dict "context" . "level" (add $level 1) }}
+{{- end }}
+{{- end -}}

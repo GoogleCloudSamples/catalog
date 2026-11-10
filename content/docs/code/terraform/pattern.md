@@ -1,0 +1,1 @@
+Order blocks chronologically by dependency (prerequisite APIs and parent resources before the primary target resource), place the `name` argument first in each resource block, and reference attributes of defined resources (`google_kms_key_ring.default.id`) rather than duplicating string literals.

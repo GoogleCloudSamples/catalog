@@ -1,0 +1,1 @@
+Generated Ruby clients have no close method, so samples create the client inside the sample function and don't close it. If a client provides a close method, such as `Google::Cloud::Spanner` clients, call it before the function returns.

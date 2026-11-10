@@ -1,0 +1,1 @@
+Client instances are thread-safe and can be reused across threads until the instance is closed. When scoping a client to a block, use a context manager (`with ... as client:`) to clean up background resources automatically.

@@ -1,27 +1,19 @@
-# Samples Style Guide
+# Cloud Samples Catalog
 
-This is the **home** of the Google Cloud Samples Style Guide.
+**View the site: [Cloud Samples Catalog](https://googlecloudsamples.github.io/catalog/)**
 
-You can [read the guide](https://googlecloudplatform.github.io/samples-style-guide/) and open issues for feedback.
+The Cloud Samples Catalog is the home of the Google Cloud Samples Style
+Guide: guidelines for writing code samples, with examples in every
+supported language.
 
-## Building the site
+This repository holds the site's source. To read the guide, use the link
+above. To propose a change, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
-This project uses [Hugo](https://gohugo.io/) with the [Docsy theme](https://www.docsy.dev/).
-Follow these steps to build the site.
+---
 
-1. Clone this repository.
+Built with [Hugo](https://gohugo.io/) and the
+[Hextra](https://imfing.github.io/hextra) theme.
 
-1. Download and [install Hugo (extended)](https://gohugo.io/getting-started/installing/) to your
-path.
-
-1. Install [Docsy dependencies](https://www.docsy.dev/docs/getting-started/#install-postcss):
-
-    ```sh
-    npm install
-    ```
-
-1. Run the local development server with the hugo CLI from the repository's root directory:
-
-    ```sh
-    hugo serve
-    ```
+This is not an officially supported Google product. This project is not
+eligible for the
+[Google Open Source Software Vulnerability Rewards Program](https://bughunters.google.com/open-source-security).

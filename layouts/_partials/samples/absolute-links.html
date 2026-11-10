@@ -1,0 +1,58 @@
+{{- /*
+  Copyright 2026 Google LLC
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/ -}}
+{{- /*
+  Rewrites local Markdown links in agent text outputs to absolute URLs, the
+  way hextra's link render hook resolves them for HTML. Agents read these
+  files outside the site, so links must not depend on the site's base path.
+
+  Resolves file-relative .md links (author-samples.md#errors) from the page's
+  source directory, and root-relative links (/llms.txt) from the site root.
+  Leaves external links, anchors, and unresolvable paths unchanged.
+
+  Params: page (the page whose content is rendered), content (string).
+  Returns: string.
+*/ -}}
+{{- $page := .page -}}
+{{- $content := .content -}}
+{{- range findRESubmatch `\]\(([^)\s]+)\)` $content -1 -}}
+  {{- $match := index . 0 -}}
+  {{- $url := urls.Parse (index . 1) -}}
+  {{- if or $url.IsAbs (not $url.Path) -}}
+    {{- continue -}}
+  {{- end -}}
+  {{- $fragment := cond (ne $url.Fragment "") (printf "#%s" $url.Fragment) "" -}}
+  {{- $path := $url.Path -}}
+  {{- $target := "" -}}
+  {{- if strings.HasSuffix $path ".md" -}}
+    {{- $path = strings.TrimSuffix ".md" $path -}}
+    {{- if not (hasPrefix $path "/") -}}
+      {{- $path = path.Join $page.File.Dir $path -}}
+    {{- end -}}
+    {{- with site.GetPage $path -}}
+      {{- $target = .Permalink -}}
+    {{- end -}}
+  {{- else if hasPrefix $path "/" -}}
+    {{- with site.GetPage $path -}}
+      {{- $target = .Permalink -}}
+    {{- else -}}
+      {{- $target = absURL (strings.TrimPrefix "/" $path) -}}
+    {{- end -}}
+  {{- end -}}
+  {{- with $target -}}
+    {{- $content = replace $content $match (printf "](%s%s)" . $fragment) -}}
+  {{- end -}}
+{{- end -}}
+{{- return $content -}}

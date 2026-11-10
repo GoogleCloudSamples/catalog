@@ -1,0 +1,184 @@
+# Copyright 2026 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Hugo configuration file
+title: Cloud Samples Catalog
+baseURL: https://googlecloudsamples.github.io/catalog/
+locale: en-us
+
+services:
+  googleAnalytics:
+    id: G-WJFDXY846K
+
+outputs:
+  home: [html, llms, llmsfull, llmspython, llmsnode, llmsjava, llmsgo, llmscsharp, llmsruby, llmsphp, llmsterraform, llmsrules]
+  page: [html, markdown]
+  section: [html, rss, markdown]
+
+# Full-text style guide files for agents and LLMs, served from the site root.
+# llms-full.txt has every language; llms-full-<lang>.txt has one language.
+# llms-rules.txt (optional) has no code examples.
+outputFormats:
+  llmsfull:
+    baseName: llms-full
+    mediaType: text/plain
+    isPlainText: true
+    notAlternative: true
+  llmspython:
+    baseName: llms-full-python
+    mediaType: text/plain
+    isPlainText: true
+    notAlternative: true
+  llmsnode:
+    baseName: llms-full-node
+    mediaType: text/plain
+    isPlainText: true
+    notAlternative: true
+  llmsjava:
+    baseName: llms-full-java
+    mediaType: text/plain
+    isPlainText: true
+    notAlternative: true
+  llmsgo:
+    baseName: llms-full-go
+    mediaType: text/plain
+    isPlainText: true
+    notAlternative: true
+  llmscsharp:
+    baseName: llms-full-csharp
+    mediaType: text/plain
+    isPlainText: true
+    notAlternative: true
+  llmsruby:
+    baseName: llms-full-ruby
+    mediaType: text/plain
+    isPlainText: true
+    notAlternative: true
+  llmsphp:
+    baseName: llms-full-php
+    mediaType: text/plain
+    isPlainText: true
+    notAlternative: true
+  llmsterraform:
+    baseName: llms-full-terraform
+    mediaType: text/plain
+    isPlainText: true
+    notAlternative: true
+  llmsrules:
+    baseName: llms-rules
+    mediaType: text/plain
+    isPlainText: true
+    notAlternative: true
+
+markup:
+  # allow raw html, for example, details shortcode
+  goldmark:
+    renderer:
+      unsafe: true
+
+  # enable hextra syntax highlight
+  highlight:
+    noClasses: false
+
+module:
+  imports:
+    - path: github.com/imfing/hextra
+
+menu:
+  main:
+    - name: About
+      pageRef: /about
+      weight: 1
+      params:
+        type: link
+        icon: library
+    - name: Blog
+      pageRef: /blog
+      weight: 2
+      params:
+        type: link
+        icon: newspaper
+    - name: Docs
+      pageRef: /docs/effective-samples
+      weight: 3
+      params:
+        type: link
+        icon: book-open
+    - name: Explore
+      url: 'https://docs.cloud.google.com/docs/samples'
+      weight: 3
+      params:
+        type: link
+        icon: collection
+    - name: Search
+      weight: 4
+      params:
+        type: search
+    - name: Source
+      weight: 5
+      url: "https://github.com/GoogleCloudSamples/catalog"
+      params:
+        icon: code
+
+params:
+  description: 'The homepage for contributors to the Cloud Samples Catalog.'
+
+  navbar:
+    displayTitle: true
+    displayLogo: false
+
+  footer:
+    displayCopyright: true
+    displayPoweredBy: true
+
+  editURL:
+    enable: true
+    base: "https://github.com/GoogleCloudSamples/catalog/edit/main/content"
+
+  page:
+    tabs:
+      sync: true
+    # "Copy page" menu on pages with a Markdown version (hextra).
+    contextMenu:
+      enable: true
+      # Links after the separator: the agent index, then the full guide in
+      # every language and in each single language.
+      links:
+        - name: Site index for agents (llms.txt)
+          url: /llms.txt
+        - name: Full guide, all languages
+          url: /llms-full.txt
+        - name: Full guide, Python
+          url: /llms-full-python.txt
+        - name: Full guide, Node.js
+          url: /llms-full-node.txt
+        - name: Full guide, Java
+          url: /llms-full-java.txt
+        - name: Full guide, Go
+          url: /llms-full-go.txt
+        - name: Full guide, C#
+          url: /llms-full-csharp.txt
+        - name: Full guide, Ruby
+          url: /llms-full-ruby.txt
+        - name: Full guide, PHP
+          url: /llms-full-php.txt
+        - name: Full guide, Terraform
+          url: /llms-full-terraform.txt
+
+  blog:
+    list:
+      displayTags: true
+
+  toc:
+    displayTags: true

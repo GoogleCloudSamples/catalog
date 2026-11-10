@@ -1,0 +1,3 @@
+{{- /* Callout as a Markdown blockquote. Params: type, inner. */ -}}
+{{- $label := .type | default "note" | title -}}
+> **{{ $label | safeHTML }}:** {{ .inner | strings.TrimSpace | replaceRE "\n" "\n> " | safeHTML }}

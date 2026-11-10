@@ -1,0 +1,284 @@
+{{- /*
+  Copyright 2026 Google LLC
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/ -}}
+{{ define "main" }}
+  {{- $readMore := (T "readMore") | default "Read article →" -}}
+  <style>
+    .catalog-blog-hero {
+      background: linear-gradient(135deg, rgba(26, 115, 232, 0.08) 0%, rgba(124, 58, 237, 0.06) 100%);
+      border: 1px solid rgba(26, 115, 232, 0.18);
+      border-radius: 1rem;
+      padding: 2rem 2rem 1.75rem;
+      margin-top: 1rem;
+      margin-bottom: 2.25rem;
+    }
+    html.dark .catalog-blog-hero {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.14) 0%, rgba(139, 92, 246, 0.12) 100%);
+      border-color: rgba(96, 165, 250, 0.25);
+    }
+    .catalog-blog-hero h1 {
+      margin: 0 0 0.65rem 0;
+      font-size: 2.1rem;
+      line-height: 1.25;
+      font-weight: 750;
+      letter-spacing: -0.02em;
+      color: #0f172a;
+    }
+    html.dark .catalog-blog-hero h1 {
+      color: #f8fafc;
+    }
+    .catalog-blog-hero .catalog-blog-subtitle {
+      font-size: 1.075rem;
+      line-height: 1.65;
+      color: #334155;
+      margin: 0;
+    }
+    html.dark .catalog-blog-hero .catalog-blog-subtitle {
+      color: #cbd5e1;
+    }
+    .catalog-blog-hero .catalog-blog-subtitle p {
+      margin: 0;
+    }
+    .catalog-blog-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .catalog-blog-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-left: 4px solid #1a73e8;
+      border-radius: 0.875rem;
+      padding: 1.5rem 1.75rem;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    }
+    .catalog-blog-card.is-craft {
+      border-left-color: #7c3aed;
+    }
+    .catalog-blog-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px -4px rgba(15, 23, 42, 0.08);
+      border-color: #cbd5e1;
+    }
+    html.dark .catalog-blog-card {
+      background: rgba(30, 41, 59, 0.55);
+      border-color: rgba(148, 163, 184, 0.2);
+      border-left-color: #60a5fa;
+      box-shadow: none;
+    }
+    html.dark .catalog-blog-card.is-craft {
+      border-left-color: #a78bfa;
+    }
+    html.dark .catalog-blog-card:hover {
+      background: rgba(30, 41, 59, 0.8);
+      border-color: rgba(148, 163, 184, 0.35);
+    }
+    .catalog-blog-meta {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 0.65rem;
+      font-size: 0.85rem;
+    }
+    .catalog-blog-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.15rem 0.65rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      background: rgba(26, 115, 232, 0.12);
+      color: #1558d6;
+    }
+    .catalog-blog-badge.is-craft {
+      background: rgba(124, 58, 237, 0.12);
+      color: #6d28d9;
+    }
+    html.dark .catalog-blog-badge {
+      background: rgba(96, 165, 250, 0.18);
+      color: #93c5fd;
+    }
+    html.dark .catalog-blog-badge.is-craft {
+      background: rgba(167, 139, 250, 0.18);
+      color: #c4b5fd;
+    }
+    .catalog-blog-date {
+      color: #64748b;
+      font-weight: 500;
+    }
+    html.dark .catalog-blog-date {
+      color: #94a3b8;
+    }
+    .catalog-blog-title {
+      margin: 0 0 0.6rem 0;
+      font-size: 1.3rem;
+      line-height: 1.35;
+      font-weight: 650;
+    }
+    .catalog-blog-title a {
+      color: #0f172a;
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
+    .catalog-blog-title a:hover {
+      color: #1a73e8;
+    }
+    html.dark .catalog-blog-title a {
+      color: #f8fafc;
+    }
+    html.dark .catalog-blog-title a:hover {
+      color: #60a5fa;
+    }
+    .catalog-blog-description {
+      margin: 0 0 0.55rem 0;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      font-weight: 500;
+      color: #1e293b;
+    }
+    html.dark .catalog-blog-description {
+      color: #e2e8f0;
+    }
+    .catalog-blog-excerpt {
+      margin: 0 0 1.1rem 0;
+      font-size: 0.975rem;
+      line-height: 1.65;
+      color: #475569;
+    }
+    html.dark .catalog-blog-excerpt {
+      color: #94a3b8;
+    }
+    .catalog-blog-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid #f1f5f9;
+    }
+    html.dark .catalog-blog-footer {
+      border-top-color: rgba(148, 163, 184, 0.15);
+    }
+    .catalog-blog-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+    .catalog-blog-tag {
+      display: inline-block;
+      padding: 0.15rem 0.55rem;
+      border-radius: 0.375rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      background: #f1f5f9;
+      color: #475569;
+      text-decoration: none;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .catalog-blog-tag:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+    html.dark .catalog-blog-tag {
+      background: rgba(51, 65, 85, 0.65);
+      color: #cbd5e1;
+    }
+    html.dark .catalog-blog-tag:hover {
+      background: rgba(71, 85, 105, 0.85);
+      color: #f8fafc;
+    }
+    .catalog-blog-readmore {
+      font-size: 0.925rem;
+      font-weight: 600;
+      color: #1a73e8;
+      text-decoration: none;
+    }
+    .catalog-blog-readmore:hover {
+      text-decoration: underline;
+    }
+    html.dark .catalog-blog-readmore {
+      color: #60a5fa;
+    }
+  </style>
+  <div class="hx:mx-auto hx:flex hextra-max-page-width">
+    {{ partial "sidebar.html" (dict "context" . "disableSidebar" true "displayPlaceholder" true) }}
+    <article class="hx:w-full hx:break-words hx:flex hx:min-h-[calc(100vh-var(--hextra-navbar-height))] hx:min-w-0 hx:justify-center hx:pb-8 hx:pr-[calc(env(safe-area-inset-right)-1.5rem)]">
+      <main id="content" class="hx:w-full hx:min-w-0 hextra-max-content-width hx:px-6 hx:pt-4 hx:md:px-12">
+        {{ partial "custom/page-begin.html" . }}
+        {{ partial "breadcrumb.html" (dict "page" . "enable" false) }}
+        <div class="catalog-blog-hero">
+          {{ if .Title }}<h1>{{ .Title }}</h1>{{ end }}
+          <div class="catalog-blog-subtitle">
+            {{ partial "custom/content-begin.html" . }}
+            {{ .Content }}
+            {{ partial "custom/content-end.html" . }}
+          </div>
+        </div>
+        {{- $pages := partial "utils/sort-pages" (dict "page" . "by" site.Params.blog.list.sortBy "order" site.Params.blog.list.sortOrder) -}}
+        {{- $pagerSize := site.Params.blog.list.pagerSize | default 10 -}}
+        {{- $paginator := .Paginate $pages $pagerSize -}}
+        <div class="catalog-blog-list">
+          {{- range $paginator.Pages }}
+            {{- $isRelease := in (.Params.tags | default slice) "releasenotes" -}}
+            <div class="catalog-blog-card{{ if not $isRelease }} is-craft{{ end }}">
+              <div class="catalog-blog-meta">
+                <span class="catalog-blog-badge{{ if not $isRelease }} is-craft{{ end }}">
+                  {{- if $isRelease -}}Monthly Release{{- else -}}Samples Craft{{- end -}}
+                </span>
+                <span class="catalog-blog-date">{{ partial "utils/format-date" .Date }}</span>
+              </div>
+              <h2 class="catalog-blog-title">
+                <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+              </h2>
+              {{- with .Description }}
+                <p class="catalog-blog-description">{{ . }}</p>
+              {{- end }}
+              {{- $bodyWithoutHeadings := .Content | replaceRE "(?s)<style[^>]*>.*?</style>" " " | replaceRE "(?s)<div class=\"catalog-release-scorecard[^\"]*\"[^>]*>.*?<span data-release-scorecard-end=\"true\"></span>" " " | replaceRE "(?s)<h[1-6][^>]*>.*?</h[1-6]>" " " | replaceRE "(?s)<pre[^>]*>.*?</pre>" " " -}}
+              {{- $plain := $bodyWithoutHeadings | plainify | htmlUnescape | replaceRE "\\s+" " " | strings.TrimSpace -}}
+              {{- if $plain }}
+                <p class="catalog-blog-excerpt">{{ $plain | truncate 240 | htmlUnescape }}</p>
+              {{- end }}
+              <div class="catalog-blog-footer">
+                <div class="catalog-blog-tags">
+                  {{- range .Params.tags }}
+                    <a class="catalog-blog-tag" href="{{ (printf "/tags/%s/" (. | urlize)) | relLangURL }}">#{{ . }}</a>
+                  {{- end }}
+                </div>
+                <a
+                  class="catalog-blog-readmore"
+                  href="{{ .RelPermalink }}"
+                  aria-label="{{ printf "%s %s" $readMore .Title }}"
+                >
+                  {{- $readMore -}}
+                </a>
+              </div>
+            </div>
+          {{ end -}}
+        </div>
+
+        {{- if gt $paginator.TotalPages 1 -}}
+          {{ partial "components/blog-pager.html" $paginator }}
+        {{- end -}}
+        {{ partial "custom/page-end.html" . }}
+      </main>
+    </article>
+    <div class="hx:max-xl:hidden hx:h-0 hx:w-64 hx:shrink-0"></div>
+  </div>
+{{- end -}}
