@@ -1,0 +1,25 @@
+{{- /*
+  Full-text style guide for agents and LLMs. Params: only (language folder,
+  "" for all languages, or "rules" for no code examples).
+  Walks the Docs section in menu order.
+*/ -}}
+{{- $only := .only | default "" -}}
+{{- $langName := "" -}}
+{{- range partial "samples/languages.html" . }}{{ if eq .folder $only }}{{ $langName = .name }}{{ end }}{{ end -}}
+# {{ site.Title | safeHTML }}: Samples Style Guide{{ with $langName }} ({{ . | safeHTML }}){{ end }}{{ if eq $only "rules" }} (rules only){{ end }}
+
+{{ if $langName -}}
+> These rules apply to every language. This file includes only {{ $langName | safeHTML }} code examples. Samples keep the same use case, inputs, and output across languages; see `llms-full.txt` for every language.
+{{- else if eq $only "rules" -}}
+> These rules apply to every language. Code examples are omitted; see `llms-full.txt` or `llms-full-<language>.txt`.
+{{- else -}}
+> These rules apply to every language. Code examples for each language follow each guideline under a `#### <Language>` heading.
+{{- end }}
+{{ with site.GetPage "/docs" }}{{ template "llms-full-section" . }}{{ end }}
+
+{{- define "llms-full-section" -}}
+{{ partial "llms/page.txt" (dict "page" .) }}
+{{ range .RegularPages }}{{ partial "llms/page.txt" (dict "page" .) }}
+{{ end -}}
+{{ range .Sections }}{{ template "llms-full-section" . }}{{ end -}}
+{{- end -}}

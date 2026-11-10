@@ -1,0 +1,43 @@
+{{- /*
+  Rewrites local Markdown links in agent text outputs to absolute URLs, the
+  way hextra's link render hook resolves them for HTML. Agents read these
+  files outside the site, so links must not depend on the site's base path.
+
+  Resolves file-relative .md links (author-samples.md#errors) from the page's
+  source directory, and root-relative links (/llms.txt) from the site root.
+  Leaves external links, anchors, and unresolvable paths unchanged.
+
+  Params: page (the page whose content is rendered), content (string).
+  Returns: string.
+*/ -}}
+{{- $page := .page -}}
+{{- $content := .content -}}
+{{- range findRESubmatch `\]\(([^)\s]+)\)` $content -1 -}}
+  {{- $match := index . 0 -}}
+  {{- $url := urls.Parse (index . 1) -}}
+  {{- if or $url.IsAbs (not $url.Path) -}}
+    {{- continue -}}
+  {{- end -}}
+  {{- $fragment := cond (ne $url.Fragment "") (printf "#%s" $url.Fragment) "" -}}
+  {{- $path := $url.Path -}}
+  {{- $target := "" -}}
+  {{- if strings.HasSuffix $path ".md" -}}
+    {{- $path = strings.TrimSuffix ".md" $path -}}
+    {{- if not (hasPrefix $path "/") -}}
+      {{- $path = path.Join $page.File.Dir $path -}}
+    {{- end -}}
+    {{- with site.GetPage $path -}}
+      {{- $target = .Permalink -}}
+    {{- end -}}
+  {{- else if hasPrefix $path "/" -}}
+    {{- with site.GetPage $path -}}
+      {{- $target = .Permalink -}}
+    {{- else -}}
+      {{- $target = absURL (strings.TrimPrefix "/" $path) -}}
+    {{- end -}}
+  {{- end -}}
+  {{- with $target -}}
+    {{- $content = replace $content $match (printf "](%s%s)" . $fragment) -}}
+  {{- end -}}
+{{- end -}}
+{{- return $content -}}

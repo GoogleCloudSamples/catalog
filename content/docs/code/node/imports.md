@@ -1,0 +1,1 @@
+Import modules with ES Module (`import`) statements at the top of the file inside the region tags. Wrap asynchronous calls in an `async` function rather than using top-level `await` so the module remains compatible with synchronous `require()` in CommonJS environments.

@@ -1,0 +1,1 @@
+{{- partial "llms/examples.txt" (dict "slug" (.Get 0) "only" "ruby") -}}

@@ -1,0 +1,1 @@
+`output` blocks expose values generated after creating a resource. To keep samples self-contained, define `output` blocks inline at the end of the sample file rather than in a separate `outputs.tf` file.

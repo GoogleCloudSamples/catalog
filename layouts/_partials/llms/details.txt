@@ -1,0 +1,4 @@
+{{- /* Details block as Markdown. Params: title, inner. */ -}}
+{{ with .title }}**{{ . | safeHTML }}**
+{{ end }}
+{{ .inner | strings.TrimSpace | safeHTML }}

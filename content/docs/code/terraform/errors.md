@@ -1,0 +1,1 @@
+Rely on Terraform's default error output, both for sample maintenance and for developer practice. Do not use [`try` expressions](https://developer.hashicorp.com/terraform/language/functions/try) to suppress errors in Terraform samples.

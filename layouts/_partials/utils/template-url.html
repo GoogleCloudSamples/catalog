@@ -1,0 +1,27 @@
+{{/*
+  Overrides hextra's utils/template-url.html to resolve root-relative results
+  against the site's base path, so site-relative links in
+  params.page.contextMenu.links (such as /llms.txt) work when the site is
+  served from a subpath.
+
+  This utility replaces placeholders in a URL template string.
+
+  Usage:
+    {{ partial "utils/template-url.html" (dict "template" .url "values" (dict "url" $pageURL "title" $pageTitle "markdown_url" $markdownURL)) }}
+
+  Placeholders use the format {key} and values are URL-encoded automatically.
+*/}}
+{{- $template := .template -}}
+{{- $values := .values | default dict -}}
+
+{{- range $key, $value := $values -}}
+  {{- $placeholder := printf "{%s}" $key -}}
+  {{- $encoded := $value | urlquery -}}
+  {{- $template = replace $template $placeholder $encoded -}}
+{{- end -}}
+
+{{- if and (hasPrefix $template "/") (not (hasPrefix $template "//")) -}}
+  {{- $template = relURL (strings.TrimPrefix "/" $template) -}}
+{{- end -}}
+
+{{- return $template -}}

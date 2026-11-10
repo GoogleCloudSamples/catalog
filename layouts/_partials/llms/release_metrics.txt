@@ -1,0 +1,10 @@
+{{- /* Release scorecard as plain Markdown. Params: month, created, updated, languages, lang_list, highlights. */ -}}
+{{- $month := .month | default "Monthly Snapshot" -}}
+**{{ $month | safeHTML }} · Catalog Snapshot**
+
+- New samples added: +{{ .created | default "0" | safeHTML }}
+- Samples modernized: {{ .updated | default "0" | safeHTML }} (excluding automated dependency bumps)
+- Languages covered: {{ .languages | default "0" | safeHTML }}{{ with .lang_list }} ({{ . | safeHTML }}){{ end }}
+{{- with .highlights }}
+- Key highlights: {{ . | safeHTML }}
+{{- end }}

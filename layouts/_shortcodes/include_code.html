@@ -1,0 +1,14 @@
+{{- /* 
+    Outputs a Markdown fenced code block from a file at the project root.
+    Call this using the % delimiter: {{% include_code "path/to/file.py" "python" %}}
+*/ -}}
+{{- $filePath := .Get 0 -}}
+{{- $lang := .Get 1 | default "text" -}}
+
+{{- if os.FileExists $filePath -}}
+  {{- $content := os.ReadFile $filePath -}}
+  {{- /* Output raw Markdown backticks */ -}}
+  {{- printf "```%s\n%s\n```" $lang $content | safeHTML -}}
+{{- else -}}
+  {{- printf "Error: File not found at **%s**" $filePath | safeHTML -}}
+{{- end -}}

@@ -1,0 +1,37 @@
+{{- /*
+  Renders a guideline's examples as plain Markdown for agent/LLM outputs.
+  Params: slug (guideline), only (language folder, "" for all, or "rules"
+  to print a pointer instead of code). Skips languages with no example.
+  Companion notes (<slug>.md) render as a blockquote above the code.
+  Hugo parses partials as HTML templates, so printed values use safeHTML
+  to keep this plain-text output unescaped.
+*/ -}}
+{{- $slug := .slug -}}
+{{- $only := .only | default "" -}}
+{{- if eq $only "rules" }}
+*Code examples omitted. See `llms-full.txt` or `llms-full-<language>.txt`.*
+{{ else -}}
+{{- range partial "samples/languages.html" . -}}
+  {{- if or (eq $only "") (eq $only .folder) -}}
+    {{- $code := printf "content/docs/code/%s/%s.%s" .folder $slug .ext -}}
+    {{- $note := printf "content/docs/code/%s/%s.md" .folder $slug -}}
+    {{- $hasCode := os.FileExists $code -}}
+    {{- $hasNote := os.FileExists $note -}}
+    {{- if or $hasCode $hasNote }}
+{{ if eq $only "" }}#### {{ .name | safeHTML }}
+
+{{ end -}}
+{{- if $hasNote -}}
+> **{{ .name | safeHTML }} note:** {{ os.ReadFile $note | strings.TrimSpace | replaceRE "\n" "\n> " | safeHTML }}
+{{ if $hasCode }}
+{{ end -}}
+{{- end -}}
+{{- if $hasCode -}}
+```{{ .lang | safeHTML }}
+{{ os.ReadFile $code | strings.TrimSpace | safeHTML }}
+```
+{{ end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- end -}}

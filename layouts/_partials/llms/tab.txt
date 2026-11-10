@@ -1,0 +1,20 @@
+{{- /*
+  Tab as Markdown. Params: name (tab label), inner, only (language folder or
+  ""). With a language set, a tab named for another language is dropped;
+  the matching language's tab and tabs not named for a language are kept.
+*/ -}}
+{{- $only := .only | default "" -}}
+{{- if eq $only "" }}
+#### {{ .name | safeHTML }}
+
+{{ .inner | strings.TrimSpace | safeHTML }}
+{{ else -}}
+  {{- $name := .name -}}
+  {{- $otherLanguage := false -}}
+  {{- range partial "samples/languages.html" . -}}
+    {{- if and (eq .name $name) (ne .folder $only) }}{{ $otherLanguage = true }}{{ end -}}
+  {{- end -}}
+  {{- if not $otherLanguage }}
+{{ .inner | strings.TrimSpace | safeHTML }}
+{{ end -}}
+{{- end -}}

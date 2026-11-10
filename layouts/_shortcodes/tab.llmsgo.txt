@@ -1,0 +1,1 @@
+{{- partial "llms/tab.txt" (dict "name" (.Get "name") "inner" .Inner "only" "go") -}}

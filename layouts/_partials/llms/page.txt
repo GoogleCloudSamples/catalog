@@ -1,0 +1,14 @@
+{{- /*
+  One page as Markdown for the full-text outputs. Params: page.
+  Shortcodes render with the current output format's templates.
+*/ -}}
+{{- $p := .page -}}
+{{- $url := $p.Permalink -}}
+{{- with $p.OutputFormats.Get "markdown" }}{{ $url = .Permalink }}{{ end }}
+# {{ $p.Title | safeHTML }}
+{{ with $p.Description }}
+> {{ . | safeHTML }}
+{{ end }}
+Source: {{ $url | safeHTML }}
+
+{{ partial "samples/absolute-links.html" (dict "page" $p "content" $p.RenderShortcodes) | strings.TrimSpace | safeHTML }}

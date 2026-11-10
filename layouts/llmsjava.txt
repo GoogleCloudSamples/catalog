@@ -1,0 +1,1 @@
+{{- partial "llms/full.txt" (dict "only" "java") -}}

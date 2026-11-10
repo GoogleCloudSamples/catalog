@@ -1,0 +1,1 @@
+{{- partial "llms/release_metrics.txt" (dict "month" (.Get "month") "created" (.Get "created") "updated" (.Get "updated") "languages" (.Get "languages") "lang_list" (.Get "lang_list") "highlights" (.Get "highlights")) -}}

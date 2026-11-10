@@ -1,0 +1,3 @@
+def example_snippet(project_id: str, file_path: str) -> None:
+    # Snippet content ...
+    print(f"Response values: {response.example_name}, {response.example_value}")

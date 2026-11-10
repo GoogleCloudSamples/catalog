@@ -1,0 +1,162 @@
+{{- $month := .Get "month" | default "Monthly Snapshot" -}}
+{{- $created := .Get "created" | default "0" -}}
+{{- $updated := .Get "updated" | default "0" -}}
+{{- $languages := .Get "languages" | default "0" -}}
+{{- $langList := .Get "lang_list" | default "" -}}
+{{- $highlights := .Get "highlights" | default "" -}}
+
+<!-- release-scorecard-start -->
+<style>
+  .catalog-release-scorecard {
+    background: linear-gradient(135deg, rgba(26, 115, 232, 0.08) 0%, rgba(13, 148, 136, 0.06) 55%, rgba(124, 58, 237, 0.07) 100%);
+    border: 1px solid rgba(26, 115, 232, 0.22);
+    border-radius: 1rem;
+    padding: 1.5rem 1.75rem;
+    margin: 1.5rem 0 2rem 0;
+  }
+  html.dark .catalog-release-scorecard {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(20, 184, 166, 0.1) 55%, rgba(139, 92, 246, 0.14) 100%);
+    border-color: rgba(96, 165, 250, 0.3);
+  }
+  .catalog-release-scorecard-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.15rem;
+  }
+  .catalog-release-scorecard-eyebrow {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #1558d6;
+    background: rgba(26, 115, 232, 0.12);
+    padding: 0.2rem 0.7rem;
+    border-radius: 9999px;
+  }
+  html.dark .catalog-release-scorecard-eyebrow {
+    color: #93c5fd;
+    background: rgba(96, 165, 250, 0.2);
+  }
+  .catalog-release-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.15rem;
+  }
+  .catalog-release-stat-tile {
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    border-radius: 0.75rem;
+    padding: 1rem 1.15rem;
+  }
+  html.dark .catalog-release-stat-tile {
+    background: rgba(15, 23, 42, 0.55);
+    border-color: rgba(148, 163, 184, 0.2);
+  }
+  .catalog-release-stat-value {
+    font-size: 2rem;
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #1a73e8;
+    margin-bottom: 0.25rem;
+  }
+  .catalog-release-stat-tile.is-updated .catalog-release-stat-value {
+    color: #0d9488;
+  }
+  .catalog-release-stat-tile.is-langs .catalog-release-stat-value {
+    color: #7c3aed;
+  }
+  html.dark .catalog-release-stat-value {
+    color: #60a5fa;
+  }
+  html.dark .catalog-release-stat-tile.is-updated .catalog-release-stat-value {
+    color: #2dd4bf;
+  }
+  html.dark .catalog-release-stat-tile.is-langs .catalog-release-stat-value {
+    color: #c4b5fd;
+  }
+  .catalog-release-stat-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #475569;
+  }
+  html.dark .catalog-release-stat-label {
+    color: #cbd5e1;
+  }
+  .catalog-release-stat-sub {
+    font-size: 0.78rem;
+    color: #64748b;
+    margin-top: 0.2rem;
+  }
+  html.dark .catalog-release-stat-sub {
+    color: #94a3b8;
+  }
+  .catalog-release-highlights {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid rgba(148, 163, 184, 0.25);
+    font-size: 0.82rem;
+  }
+  .catalog-release-highlights-label {
+    font-weight: 600;
+    color: #475569;
+    margin-right: 0.25rem;
+  }
+  html.dark .catalog-release-highlights-label {
+    color: #cbd5e1;
+  }
+  .catalog-release-pill {
+    display: inline-block;
+    padding: 0.15rem 0.6rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    color: #334155;
+  }
+  html.dark .catalog-release-pill {
+    background: rgba(30, 41, 59, 0.75);
+    border-color: rgba(148, 163, 184, 0.25);
+    color: #e2e8f0;
+  }
+</style>
+
+<div class="catalog-release-scorecard not-prose">
+  <div class="catalog-release-scorecard-header">
+    <span class="catalog-release-scorecard-eyebrow">{{ $month }} · Catalog Snapshot</span>
+  </div>
+  <div class="catalog-release-stats-grid">
+    <div class="catalog-release-stat-tile is-created">
+      <div class="catalog-release-stat-value">+{{ $created }}</div>
+      <div class="catalog-release-stat-label">New Samples Added</div>
+      <div class="catalog-release-stat-sub">Net-new API &amp; feature scenarios</div>
+    </div>
+    <div class="catalog-release-stat-tile is-updated">
+      <div class="catalog-release-stat-value">{{ $updated }}</div>
+      <div class="catalog-release-stat-label">Samples Modernized</div>
+      <div class="catalog-release-stat-sub">Excluding automated dependency bumps</div>
+    </div>
+    <div class="catalog-release-stat-tile is-langs">
+      <div class="catalog-release-stat-value">{{ $languages }}</div>
+      <div class="catalog-release-stat-label">Languages Covered</div>
+      {{- if $langList }}
+        <div class="catalog-release-stat-sub">{{ $langList }}</div>
+      {{- end }}
+    </div>
+  </div>
+  {{- if $highlights }}
+    <div class="catalog-release-highlights">
+      <span class="catalog-release-highlights-label">Key Highlights:</span>
+      {{- range (split $highlights ",") }}
+        <span class="catalog-release-pill">{{ strings.TrimSpace . }}</span>
+      {{- end }}
+    </div>
+  {{- end }}
+</div><span data-release-scorecard-end="true"></span>
