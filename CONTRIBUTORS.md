@@ -25,6 +25,7 @@ If we're missing your name, please submit a pull request adding your name, or me
 * Daniel Azuma
 * Eno Compton
 * Eric Schmidt
+* Francisco Javier Alarcón Esparza
 * Jason Dobry
 * Jesse Lovelace
 * Jonathan Simon
@@ -35,8 +36,10 @@ If we're missing your name, please submit a pull request adding your name, or me
 * Manny Licea
 * Marc Dougherty
 * Meredith Slota
+* Nim Jayawardena
 * Nivedha Senthil
 * Patti Shin
+* Shawn M. Jones
 * Sita Lakshmi Sangameswaran
 * Sofia Leon
 * Takashi Matsuo
