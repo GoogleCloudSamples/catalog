@@ -16,7 +16,7 @@ on:
       - '!.gitignore'
       - '!_agents/**'  # Agent skills; not mounted in the Hugo build.
       - '!.github/**'
-      - '.github/workflows/pages.yaml'  # Redeploy when this workflow changes.
+      - '.github/workflows/deploy.yaml'  # Redeploy when this workflow changes.
 
   # Allows you to run this workflow manually from the Actions tab.
   workflow_dispatch:
