@@ -1,0 +1,94 @@
+# Builds the Hugo site and deploys it to GitHub Pages.
+name: Deploy Hugo site to Pages
+
+on:
+  # Runs on pushes targeting the default branch.
+  push:
+    branches: ["main"]
+    # Skip deploys when only non-site files change. Order matters: the last
+    # matching pattern wins. Patterns use GitHub glob syntax, where '*' does
+    # not match '/', so '!*.md' excludes only top-level Markdown files and
+    # content/**/*.md still triggers a deploy.
+    paths:
+      - '**'
+      - '!*.md'
+      - '!LICENSE'
+      - '!.gitignore'
+      - '!_agents/**'  # Agent skills; not mounted in the Hugo build.
+      - '!.github/**'
+      - '.github/workflows/deploy.yaml'  # Redeploy when this workflow changes.
+
+  # Allows you to run this workflow manually from the Actions tab.
+  workflow_dispatch:
+
+# Read-only default for all jobs. Write scopes are granted only to the
+# deploy job below.
+permissions:
+  contents: read  # Check out the repository.
+  pages: read  # Let configure-pages look up the Pages site URL.
+
+# Allow only one concurrent deployment, skipping runs queued between the run
+# in-progress and latest queued. However, do NOT cancel in-progress runs as we
+# want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+# Default to bash.
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  # Build job.
+  build:
+    runs-on: ubuntu-latest
+    env:
+      HUGO_VERSION: 0.165.0
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          fetch-depth: 0  # Fetch all history for .GitInfo and .Lastmod.
+      - name: Setup Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e  # v7.0.0
+        with:
+          go-version: '1.26'
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d  # v6.0.0
+      - name: Setup Hugo
+        run: |
+          wget -O "${RUNNER_TEMP}/hugo.deb" "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb" \
+          && sudo dpkg -i "${RUNNER_TEMP}/hugo.deb"
+      - name: Build with Hugo
+        env:
+          # For maximum backward compatibility with Hugo modules.
+          HUGO_ENVIRONMENT: production
+          HUGO_ENV: production
+          # Passed via env, not inline expansion, to avoid template injection.
+          PAGES_BASE_URL: ${{ steps.pages.outputs.base_url }}
+        run: |
+          hugo \
+            --gc --minify \
+            --baseURL "${PAGES_BASE_URL}/"
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9  # v5.0.0
+        with:
+          path: ./public
+
+  # Deployment job.
+  deploy:
+    # Replaces the workflow-level permissions for this job only.
+    permissions:
+      pages: write  # Create the Pages deployment.
+      id-token: write  # Request the OIDC token deploy-pages uses to verify the artifact.
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346  # v5.0.1
