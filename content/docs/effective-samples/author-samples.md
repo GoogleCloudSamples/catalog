@@ -130,11 +130,11 @@ For resource creation operations, pass the new resource's identifier according t
 
 In languages where callers pass execution context or output streams by convention (such as `context.Context` or `io.Writer` in Go), include those parameters as well.
 
-Document each parameter with an example value. Prefix example values with `example-` (for example, `"example-project-id"`). Don't use possessive prefixes such as `my-`, `your-`, `MY_`, or `YOUR_`.
+Document each parameter with an [example value](#example-values).
 
 {{% guideline_examples "minimal-arguments" %}}
 
-***Why?** Arguments increase the complexity of the sample code, and hide parts of the sample use case being taught. Example values show the expected format, so developers can call the sample without editing it or guessing. A single `example-` prefix keeps values consistent across samples and matches the [Google developer documentation style for placeholders](https://developers.google.com/style/placeholders).*
+***Why?** Arguments increase the complexity of the sample code, and hide parts of the sample use case being taught. Example values show the expected format, so developers can call the sample without editing it or guessing.*
 
 ### Inline behavioral parameters {#inline-parameters}
 
@@ -280,7 +280,7 @@ Adhere to a style commonly used by the language communities. Use the community's
 
 * **Go:** Follow the [Google Go Style Guide](https://google.github.io/styleguide/go/) and [Effective Go](https://go.dev/doc/effective_go). The official linters for go are [go fmt](https://pkg.go.dev/cmd/gofmt) and [go vet](https://pkg.go.dev/cmd/vet).
 
-* **JavaScript:** Follow the [Google JavaScript Style Guide](https://google.github.io/styleguide/jsguide.html) and the [Google TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html). Tooling available at [google/gts](https://github.com/google/gts).
+* **JavaScript:** Follow the [Google JavaScript Style Guide](https://google.github.io/styleguide/jsguide.html) and the [Google TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html). Tooling uses [ESLint](https://eslint.org/) and [Prettier](https://prettier.io/).
 
 * **Java:** Follow the [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html). Tooling available at [google/google-java-format](https://github.com/google/google-java-format).
 
@@ -350,6 +350,14 @@ const request = { view: 'FULL' };
 
 
 ***Why?** Comments provide context and depth to what the code teaches, while comments that directly translate the syntax create noise. Because a sample's doc comment header is surfaced in search results and on `docs.cloud.google.com`, stating the action tells developers what the sample does at a glance.*
+
+### Example values {#example-values}
+
+**Applies to:** All Samples
+
+Prefix every value that stands in for a developer's own value with `example-`, such as `example-project-id`, `example-bucket`, or `example-display-name`. This includes parameter documentation, placeholder text, resource labels, and display names. Don't use possessive prefixes such as `my-`, `your-`, `MY_`, or `YOUR_`.
+
+***Why?** One prefix makes example values easy to recognize and replace, and matches the [Google developer documentation style for placeholders](https://developers.google.com/style/placeholders).*
 
 ### Initializing Clients {#clients}
 
