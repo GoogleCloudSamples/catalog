@@ -2,6 +2,6 @@ from google.cloud import dlp_v2
 
 
 def list_info_types() -> None:
-    with dlp_v2.DlpServiceClient() as dlp_client:
+    with dlp_v2.DlpServiceClient() as client:
         # Snippet content ...
         pass

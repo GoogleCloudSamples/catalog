@@ -1,7 +1,5 @@
 import {v2} from '@google-cloud/dlp';
 
-const dlpClient = new v2.DlpServiceClient();
-
 /**
  * Prints the sensitive data detectors (infoTypes) supported by Cloud Data Loss
  * Prevention (DLP) for risk analysis.
@@ -10,9 +8,9 @@ const dlpClient = new v2.DlpServiceClient();
  * addresses, or credit card numbers—that DLP uses to scan and redact content.
  */
 async function listInfoTypes() {
-  const dlpClient = new DlpServiceClient();
+  const client = new v2.DlpServiceClient();
   try {
-    const [response] = await dlpClient.listInfoTypes({
+    const [response] = await client.listInfoTypes({
       // Return infoTypes that risk analysis jobs can detect.
       filter: 'supported_by=RISK_ANALYSIS',
     });
@@ -23,6 +21,6 @@ async function listInfoTypes() {
       console.log(`Display name: ${infoType.displayName}`);
     }
   } finally {
-    await dlpClient.close();
+    await client.close();
   }
 }

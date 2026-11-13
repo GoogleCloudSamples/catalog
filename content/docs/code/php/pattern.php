@@ -10,13 +10,13 @@ use Google\Cloud\Dlp\V2\ListInfoTypesRequest;
  */
 function list_info_types(): void
 {
-    $dlp = new DlpServiceClient();
+    $client = new DlpServiceClient();
 
     $request = (new ListInfoTypesRequest())
         // Return infoTypes that risk analysis jobs can detect.
         ->setFilter('supported_by=RISK_ANALYSIS');
 
-    $response = $dlp->listInfoTypes($request);
+    $response = $client->listInfoTypes($request);
 
     print('Info types found:' . PHP_EOL);
     foreach ($response->getInfoTypes() as $infoType) {

@@ -130,7 +130,7 @@ For resource creation operations, pass the new resource's identifier according t
 
 In languages where callers pass execution context or output streams by convention (such as `context.Context` or `io.Writer` in Go), include those parameters as well.
 
-Document each parameter with an example value.
+Document each parameter with an [example value](#example-values).
 
 {{% guideline_examples "minimal-arguments" %}}
 
@@ -280,11 +280,17 @@ Adhere to a style commonly used by the language communities. Use the community's
 
 * **Go:** Follow the [Google Go Style Guide](https://google.github.io/styleguide/go/) and [Effective Go](https://go.dev/doc/effective_go). The official linters for go are [go fmt](https://pkg.go.dev/cmd/gofmt) and [go vet](https://pkg.go.dev/cmd/vet).
 
-* **JavaScript:** Follow the [Google JavaScript Style Guide](https://google.github.io/styleguide/jsguide.html) and the [Google TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html). Tooling available at [google/gts](https://github.com/google/gts).
+* **JavaScript:** Follow the [Google JavaScript Style Guide](https://google.github.io/styleguide/jsguide.html) and the [Google TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html). Tooling uses [ESLint](https://eslint.org/) and [Prettier](https://prettier.io/).
 
 * **Java:** Follow the [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html). Tooling available at [google/google-java-format](https://github.com/google/google-java-format).
 
 * **Python:** Follow the best practices defined in the [PEP 8](https://www.python.org/dev/peps/pep-0008/) style guide. Tooling uses [flake8](http://flake8.pycqa.org/en/latest/).
+
+* **C#:** Follow the [.NET coding conventions](https://learn.microsoft.com/dotnet/csharp/fundamentals/coding-style/coding-conventions). Tooling available with [dotnet format](https://learn.microsoft.com/dotnet/core/tools/dotnet-format).
+
+* **Ruby:** Follow the [Ruby Style Guide](https://rubystyle.guide/). Tooling uses [RuboCop](https://rubocop.org/) with the [google-style](https://github.com/googleapis/ruby-style) configuration.
+
+* **Terraform:** Follow the [Terraform style conventions](https://developer.hashicorp.com/terraform/language/style). Tooling uses [terraform fmt](https://developer.hashicorp.com/terraform/cli/commands/fmt) and [terraform validate](https://developer.hashicorp.com/terraform/cli/commands/validate).
 
 * **PHP**: Follow the [PSR-1](https://www.php-fig.org/psr/psr-1/) and [PER Coding Style 3.1](https://www.php-fig.org/per/coding-style/) community coding standards, with one notable exception: The function names for samples are in `snake_case` rather than `camelCase`, in order to differentiate them from class methods.
 
@@ -345,6 +351,14 @@ const request = { view: 'FULL' };
 
 ***Why?** Comments provide context and depth to what the code teaches, while comments that directly translate the syntax create noise. Because a sample's doc comment header is surfaced in search results and on `docs.cloud.google.com`, stating the action tells developers what the sample does at a glance.*
 
+### Example values {#example-values}
+
+**Applies to:** All Samples
+
+Prefix every value that stands in for a developer's own value with `example-`, such as `example-project-id`, `example-bucket`, or `example-display-name`. This includes parameter documentation, placeholder text, resource labels, and display names. Don't use possessive prefixes such as `my-`, `your-`, `MY_`, or `YOUR_`.
+
+***Why?** One prefix makes example values easy to recognize and replace, and matches the [Google developer documentation style for placeholders](https://developers.google.com/style/placeholders).*
+
 ### Initializing Clients {#clients}
 
 Close each API client in the same scope that creates it. A function that receives a client as a parameter doesn't close it, unless cleanup is the function's purpose.
@@ -354,9 +368,11 @@ Close each API client in the same scope that creates it. A function that receive
 
 If a client library has no stable method to close a client, skip the close step.
 
+Name the client variable `client` when the sample uses one client. When it uses more than one, name each after its client type in the language's casing, such as `dlpClient` and `storageClient`, or `dlp_client` and `storage_client`.
+
 {{% guideline_examples "clients" %}}
 
-***Why?** Working with API clients is a universal step within the scope of every sample that covers making an API call. Creating and closing the client in the sample function keeps snippets self-contained and safe to import, while Patterns show the reuse that long-running applications need.*
+***Why?** Working with API clients is a universal step within the scope of every sample that covers making an API call. Creating and closing the client in the sample function keeps snippets self-contained and safe to import, while Patterns show the reuse that long-running applications need. A consistent client name makes calls easy to spot across samples, and type-based names keep several clients distinct.*
 
 ### Authentication {#authentication}
 
