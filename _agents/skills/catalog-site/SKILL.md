@@ -45,7 +45,7 @@ Work through these steps in order:
 6. **Add examples when code shows the rule better than prose.** Follow [Writing Guideline Code Examples](#writing-guideline-code-examples). Skip examples for rules about wording or process, such as Respectful Words.
 7. **Verify API claims in library source.** Before a rule, note, or example states how a client library behaves (such as whether a client has a close or dispose method), confirm it in the library's source code. Documentation summaries and memory aren't enough.
 8. **Update the page's `description`** front matter if it lists the page's topics.
-9. **Validate and preview** as described in [Branching, Small-Batch PRs & Verification Workflow](#branching-small-batch-prs--verification-workflow).
+9. **Validate and preview** as described in [Branching, Small-Batch PRs & Verification Workflow](#branching-small-batch-prs-verification-workflow).
 
 #### Template
 
