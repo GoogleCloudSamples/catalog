@@ -6,13 +6,13 @@ def list_info_types() -> None:
     email addresses, or credit card numbers—that DLP uses to scan and redact
     content.
     """
-    with dlp_v2.DlpServiceClient() as dlp_client:
+    with dlp_v2.DlpServiceClient() as client:
         request = dlp_v2.ListInfoTypesRequest(
             # Return infoTypes that risk analysis jobs can detect.
             filter="supported_by=RISK_ANALYSIS",
         )
 
-        response = dlp_client.list_info_types(request=request)
+        response = client.list_info_types(request=request)
 
         print("Info types found:")
         for info_type in response.info_types:

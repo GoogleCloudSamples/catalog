@@ -130,11 +130,11 @@ For resource creation operations, pass the new resource's identifier according t
 
 In languages where callers pass execution context or output streams by convention (such as `context.Context` or `io.Writer` in Go), include those parameters as well.
 
-Document each parameter with an example value.
+Document each parameter with an example value. Prefix example values with `example-` (for example, `"example-project-id"`). Don't use possessive prefixes such as `my-`, `your-`, `MY_`, or `YOUR_`.
 
 {{% guideline_examples "minimal-arguments" %}}
 
-***Why?** Arguments increase the complexity of the sample code, and hide parts of the sample use case being taught. Example values show the expected format, so developers can call the sample without editing it or guessing.*
+***Why?** Arguments increase the complexity of the sample code, and hide parts of the sample use case being taught. Example values show the expected format, so developers can call the sample without editing it or guessing. A single `example-` prefix keeps values consistent across samples and matches the [Google developer documentation style for placeholders](https://developers.google.com/style/placeholders).*
 
 ### Inline behavioral parameters {#inline-parameters}
 
@@ -286,6 +286,12 @@ Adhere to a style commonly used by the language communities. Use the community's
 
 * **Python:** Follow the best practices defined in the [PEP 8](https://www.python.org/dev/peps/pep-0008/) style guide. Tooling uses [flake8](http://flake8.pycqa.org/en/latest/).
 
+* **C#:** Follow the [.NET coding conventions](https://learn.microsoft.com/dotnet/csharp/fundamentals/coding-style/coding-conventions). Tooling available with [dotnet format](https://learn.microsoft.com/dotnet/core/tools/dotnet-format).
+
+* **Ruby:** Follow the [Ruby Style Guide](https://rubystyle.guide/). Tooling uses [RuboCop](https://rubocop.org/) with the [google-style](https://github.com/googleapis/ruby-style) configuration.
+
+* **Terraform:** Follow the [Terraform style conventions](https://developer.hashicorp.com/terraform/language/style). Tooling uses [terraform fmt](https://developer.hashicorp.com/terraform/cli/commands/fmt) and [terraform validate](https://developer.hashicorp.com/terraform/cli/commands/validate).
+
 * **PHP**: Follow the [PSR-1](https://www.php-fig.org/psr/psr-1/) and [PER Coding Style 3.1](https://www.php-fig.org/per/coding-style/) community coding standards, with one notable exception: The function names for samples are in `snake_case` rather than `camelCase`, in order to differentiate them from class methods.
 
 ***Why?** This guideline formalizes a common, enforced measure for the principle of idiomaticity.*
@@ -354,9 +360,11 @@ Close each API client in the same scope that creates it. A function that receive
 
 If a client library has no stable method to close a client, skip the close step.
 
+Name the client variable `client` when the sample uses one client. When it uses more than one, name each after its client type in the language's casing, such as `dlpClient` and `storageClient`, or `dlp_client` and `storage_client`.
+
 {{% guideline_examples "clients" %}}
 
-***Why?** Working with API clients is a universal step within the scope of every sample that covers making an API call. Creating and closing the client in the sample function keeps snippets self-contained and safe to import, while Patterns show the reuse that long-running applications need.*
+***Why?** Working with API clients is a universal step within the scope of every sample that covers making an API call. Creating and closing the client in the sample function keeps snippets self-contained and safe to import, while Patterns show the reuse that long-running applications need. A consistent client name makes calls easy to spot across samples, and type-based names keep several clients distinct.*
 
 ### Authentication {#authentication}
 

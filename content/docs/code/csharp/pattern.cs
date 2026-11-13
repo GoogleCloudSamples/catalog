@@ -5,7 +5,7 @@
 // addresses, or credit card numbers—that DLP uses to scan and redact content.
 public void ListInfoTypes()
 {
-    var dlp = DlpServiceClient.Create();
+    var client = DlpServiceClient.Create();
 
     var request = new ListInfoTypesRequest
     {
@@ -13,7 +13,7 @@ public void ListInfoTypes()
         Filter = "supported_by=RISK_ANALYSIS"
     };
 
-    var response = dlp.ListInfoTypes(request);
+    var response = client.ListInfoTypes(request);
 
     Console.WriteLine("Info types found:");
     foreach (var infoType in response.InfoTypes)

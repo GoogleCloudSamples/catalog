@@ -1,12 +1,12 @@
 func makeSandwich() error {
 	ctx := context.Background()
-	c, err := sandwichmanager.NewClient(ctx)
+	client, err := sandwichmanager.NewClient(ctx)
 	if err != nil {
 		return fmt.Errorf("sandwichmanager.NewClient: %w", err)
 	}
-	defer c.Close()
+	defer client.Close()
 
-	if err := c.MakeSandwich(ctx); err != nil {
+	if err := client.MakeSandwich(ctx); err != nil {
 		return fmt.Errorf("MakeSandwich: %w", err)
 	}
 

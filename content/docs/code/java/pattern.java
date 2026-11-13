@@ -4,14 +4,14 @@
 // InfoTypes represent categories of sensitive data—such as person names, email
 // addresses, or credit card numbers—that DLP uses to scan and redact content.
 public static void listInfoTypes() throws IOException {
-  try (DlpServiceClient dlpClient = DlpServiceClient.create()) {
+  try (DlpServiceClient client = DlpServiceClient.create()) {
     ListInfoTypesRequest request =
         ListInfoTypesRequest.newBuilder()
             // Return infoTypes that risk analysis jobs can detect.
             .setFilter("supported_by=RISK_ANALYSIS")
             .build();
 
-    ListInfoTypesResponse response = dlpClient.listInfoTypes(request);
+    ListInfoTypesResponse response = client.listInfoTypes(request);
 
     System.out.println("Info types found:");
     for (InfoTypeDescription infoType : response.getInfoTypesList()) {

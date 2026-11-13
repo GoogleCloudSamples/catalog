@@ -1,6 +1,6 @@
 try
 {
-    storageClient.DeleteBucket(bucketName);
+    client.DeleteBucket(bucketName);
 }
 catch (Google.GoogleApiException e) when (e.HttpStatusCode == System.Net.HttpStatusCode.NotFound)
 {

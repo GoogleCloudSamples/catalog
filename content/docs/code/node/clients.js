@@ -1,11 +1,11 @@
 import {v2} from '@google-cloud/dlp';
 
 async function listInfoTypes() {
-  const dlpClient = new v2.DlpServiceClient();
+  const client = new v2.DlpServiceClient();
   try {
     // Snippet content ...
   } finally {
-    await dlpClient.close();
+    await client.close();
   }
 }
 
