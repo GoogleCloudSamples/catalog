@@ -52,6 +52,10 @@ later, [Go](https://go.dev/doc/install), and Git. The
 [Hextra](https://imfing.github.io/hextra) theme is a Hugo module, so Hugo
 downloads it on first run.
 
+Every pull request runs the same checks, plus the validator's tests, an
+`addlicense -check` for license headers, and a full site build. Problems appear
+as annotations on the pull request.
+
 `--buildDrafts` includes pages marked `draft: true` in your local preview. The
 production site doesn't build drafts, so set `draft: false` in the front matter
 of any page that should be published.

@@ -1,0 +1,97 @@
+# Copyright 2026 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Validates pull requests: tests the catalog validator, runs the catalog
+# checks, checks license headers, and builds the Hugo site. Findings are
+# reported as annotations on the pull request.
+name: Validate catalog
+
+on:
+  # pull_request (not pull_request_target) runs fork PRs with a read-only
+  # token and no secrets.
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read  # Check out the repository.
+
+# Cancel superseded runs for the same pull request.
+concurrency:
+  group: validate-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    env:
+      HUGO_VERSION: 0.165.0  # Keep in sync with deploy.yaml.
+      SCRIPTS_DIR: _agents/skills/catalog-site/scripts
+      ADDLICENSE_VERSION: v1.2.0
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Setup Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e  # v7.0.0
+        with:
+          go-version-file: _agents/skills/catalog-site/scripts/go.mod
+          cache-dependency-path: _agents/skills/catalog-site/scripts/go.sum
+
+      # Later steps run even if an earlier check fails, so one run reports
+      # every problem.
+      - name: Test validator
+        run: |
+          go -C "${SCRIPTS_DIR}" vet ./...
+          go -C "${SCRIPTS_DIR}" test ./...
+      - name: Run catalog checks
+        if: ${{ !cancelled() }}
+        run: |
+          # The snippets check skips Ruby syntax checks when ruby is missing.
+          ruby --version
+          go -C "${SCRIPTS_DIR}" run . --format github
+      - name: Check license headers
+        if: ${{ !cancelled() }}
+        run: |
+          go install "github.com/google/addlicense@${ADDLICENSE_VERSION}"
+          mapfile -t files < <(git ls-files)
+          set +e
+          out="$("$(go env GOPATH)/bin/addlicense" -check \
+            -ignore 'content/docs/code/**' -ignore 'resources/**' "${files[@]}" 2>&1)"
+          rc=$?
+          set -e
+          if [[ ${rc} -eq 0 ]]; then
+            echo "All files have license headers."
+            exit 0
+          fi
+          while IFS= read -r line; do
+            if [[ -f "${line}" ]]; then
+              echo "::error file=${line},title=license/missing-header::Missing license header. Run: addlicense -c \"Google LLC\" -l apache ${line}"
+            else
+              echo "${line}"
+            fi
+          done <<< "${out}"
+          exit 1
+      - name: Setup Hugo
+        if: ${{ !cancelled() }}
+        run: |
+          wget -O "${RUNNER_TEMP}/hugo.deb" "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb" \
+          && sudo dpkg -i "${RUNNER_TEMP}/hugo.deb"
+      - name: Build site
+        if: ${{ !cancelled() }}
+        run: hugo --buildDrafts --gc --destination "${RUNNER_TEMP}/public"
