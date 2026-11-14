@@ -97,3 +97,53 @@ func TestWriteText(t *testing.T) {
 		})
 	}
 }
+
+func TestWriteGitHub(t *testing.T) {
+	tests := []struct {
+		name     string
+		findings []Finding
+		want     string
+	}{
+		{
+			name: "no findings",
+			want: "All catalog checks passed with 0 errors!\n",
+		},
+		{
+			name: "error with line and warning without line",
+			findings: []Finding{
+				{Domain: "links", Rule: "broken-anchor", Severity: SeverityError, File: "content/docs/a.md", Line: 12, Message: "anchor #x not found"},
+				{Domain: "snippets", Rule: "author-note", Severity: SeverityWarning, File: "content/docs/code/go/b.go", Message: "TODO found"},
+			},
+			want: "::error file=content/docs/a.md,line=12,title=links/broken-anchor::anchor #x not found\n" +
+				"::warning file=content/docs/code/go/b.go,title=snippets/author-note::TODO found\n" +
+				"Catalog checks found 1 error(s) and 1 warning(s).\n",
+		},
+		{
+			name: "escapes special characters",
+			findings: []Finding{
+				{Domain: "d", Rule: "r", Severity: SeverityError, File: "a,b:c.md", Message: "100% bad\nnext line"},
+			},
+			want: "::error file=a%2Cb%3Ac.md,title=d/r::100%25 bad%0Anext line\n" +
+				"Catalog checks found 1 error(s) and 0 warning(s).\n",
+		},
+		{
+			name: "finding without file",
+			findings: []Finding{
+				{Domain: "languages", Rule: "missing", Severity: SeverityError, Message: "no output format"},
+			},
+			want: "::error title=languages/missing::no output format\n" +
+				"Catalog checks found 1 error(s) and 0 warning(s).\n",
+		},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			var b strings.Builder
+			if err := WriteGitHub(&b, tc.findings); err != nil {
+				t.Fatalf("WriteGitHub() error = %v", err)
+			}
+			if got := b.String(); got != tc.want {
+				t.Errorf("WriteGitHub() =\n%q\nwant\n%q", got, tc.want)
+			}
+		})
+	}
+}

@@ -28,7 +28,7 @@ func TestFormatFlagDescriptions(t *testing.T) {
 	if rootFormat == nil {
 		t.Fatal("rootCmd PersistentFlags().Lookup(\"format\") = nil, want flag")
 	}
-	if got, want := rootFormat.Usage, "Output format (text or json)"; got != want {
+	if got, want := rootFormat.Usage, "Output format (text, json, or github)"; got != want {
 		t.Errorf("rootCmd --format Usage = %q, want %q", got, want)
 	}
 

@@ -61,7 +61,7 @@ func NewRootCmd() *cobra.Command {
 
 	defaultRoot := defaultRepoRoot()
 	rootCmd.PersistentFlags().StringVar(&opts.repoRoot, "repo-root", defaultRoot, "Path to the catalog repository root")
-	rootCmd.PersistentFlags().StringVar(&opts.format, "format", "text", "Output format (text or json)")
+	rootCmd.PersistentFlags().StringVar(&opts.format, "format", "text", "Output format (text, json, or github)")
 
 	rootCmd.AddCommand(
 		newShortcodesCmd(opts),
@@ -94,8 +94,12 @@ func runChecks(w io.Writer, opts *options, checks ...checkFunc) error {
 		if err := report.WriteJSON(w, allFindings); err != nil {
 			return err
 		}
+	case "github":
+		if err := report.WriteGitHub(w, allFindings); err != nil {
+			return err
+		}
 	default:
-		return fmt.Errorf("unsupported output format %q (want \"text\" or \"json\")", opts.format)
+		return fmt.Errorf("unsupported output format %q (want \"text\", \"json\", or \"github\")", opts.format)
 	}
 
 	if report.HasErrors(allFindings) {
