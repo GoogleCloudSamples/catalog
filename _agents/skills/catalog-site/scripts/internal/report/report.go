@@ -168,14 +168,19 @@ func WriteGitHub(w io.Writer, findings []Finding) error {
 	return nil
 }
 
+var (
+	githubDataReplacer     = strings.NewReplacer("%", "%25", "\r", "%0D", "\n", "%0A")
+	githubPropertyReplacer = strings.NewReplacer("%", "%25", "\r", "%0D", "\n", "%0A", ":", "%3A", ",", "%2C")
+)
+
 // escapeGitHubData escapes a workflow command message.
 func escapeGitHubData(s string) string {
-	return strings.NewReplacer("%", "%25", "\r", "%0D", "\n", "%0A").Replace(s)
+	return githubDataReplacer.Replace(s)
 }
 
 // escapeGitHubProperty escapes a workflow command property value.
 func escapeGitHubProperty(s string) string {
-	return strings.NewReplacer("%", "%25", "\r", "%0D", "\n", "%0A", ":", "%3A", ",", "%2C").Replace(s)
+	return githubPropertyReplacer.Replace(s)
 }
 
 func formatLocation(f Finding) string {
